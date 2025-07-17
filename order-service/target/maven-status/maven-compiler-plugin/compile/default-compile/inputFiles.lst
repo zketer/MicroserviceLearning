@@ -1,6 +1,0 @@
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/OrderServiceApplication.java
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/controller/OrderController.java
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/feign/UserServiceFeign.java
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/feign/UserServiceFeignFallback.java
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/mapper/OrderMapper.java
-/Users/lynn/Workstation/javaStudy/order-service/src/main/java/com/study/order/service/OrderService.java
