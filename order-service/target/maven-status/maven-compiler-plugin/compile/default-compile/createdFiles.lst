@@ -1,0 +1,6 @@
+com/study/order/feign/UserServiceFeign.class
+com/study/order/mapper/OrderMapper.class
+com/study/order/feign/UserServiceFeignFallback.class
+com/study/order/controller/OrderController.class
+com/study/order/service/OrderService.class
+com/study/order/OrderServiceApplication.class

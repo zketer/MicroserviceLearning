@@ -1,0 +1,114 @@
+# 订单服务配置文件
+
+# 服务器配置
+server:
+  port: 8082  # 订单服务端口
+
+# Spring应用配置
+spring:
+  application:
+    name: order-service  # 服务名称，在Eureka中显示
+    
+  # 数据源配置
+  datasource:
+    # MySQL数据库连接配置
+    url: jdbc:mysql://localhost:3306/springcloud_study?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root  # 数据库用户名（请根据实际情况修改）
+    password: rootroot  # 数据库密码（请根据实际情况修改）
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    
+    # 连接池配置
+    hikari:
+      maximum-pool-size: 10  # 最大连接数
+      minimum-idle: 5        # 最小空闲连接数
+      connection-timeout: 30000  # 连接超时时间（毫秒）
+      idle-timeout: 600000       # 空闲超时时间（毫秒）
+
+# Eureka客户端配置
+eureka:
+  client:
+    # 向注册中心注册自己
+    register-with-eureka: true
+    
+    # 从注册中心获取服务列表
+    fetch-registry: true
+    
+    # 注册中心地址
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+      
+  instance:
+    # 实例ID，确保唯一性
+    instance-id: ${spring.application.name}:${server.port}
+    
+    # 优先使用IP地址注册
+    prefer-ip-address: true
+    
+    # 心跳间隔（秒）
+    lease-renewal-interval-in-seconds: 10
+    
+    # 服务失效时间（秒）
+    lease-expiration-duration-in-seconds: 30
+
+# MyBatis Plus配置
+mybatis-plus:
+  configuration:
+    # 开启驼峰命名转换
+    map-underscore-to-camel-case: true
+    
+    # 开启SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    
+  # 实体类包路径
+  type-aliases-package: com.study.common.entity
+  
+  # Mapper XML文件路径
+  mapper-locations: classpath:mapper/*.xml
+  
+  # 全局配置
+  global-config:
+    db-config:
+      # 主键策略：自增
+      id-type: auto
+      
+      # 逻辑删除字段
+      logic-delete-field: deleted
+      
+      # 逻辑删除值
+      logic-delete-value: 1
+      
+      # 逻辑未删除值
+      logic-not-delete-value: 0
+
+# Feign配置
+feign:
+  client:
+    config:
+      # 全局配置
+      default:
+        # 连接超时时间（毫秒）
+        connect-timeout: 5000
+        # 读取超时时间（毫秒）
+        read-timeout: 10000
+        # 日志级别
+        logger-level: basic
+      
+      # 针对特定服务的配置
+      user-service:
+        # 连接超时时间
+        connect-timeout: 3000
+        # 读取超时时间
+        read-timeout: 5000
+
+# 日志配置
+logging:
+  level:
+    # 设置包日志级别
+    com.study.order: DEBUG
+    # Feign日志
+    com.study.order.feign: DEBUG
+    # SQL日志
+    com.study.order.mapper: DEBUG
+  pattern:
+    # 控制台日志格式
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

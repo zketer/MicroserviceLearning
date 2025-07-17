@@ -1,0 +1,49 @@
+# Eureka注册中心配置文件
+# YAML格式配置文件，层次结构清晰，易于阅读
+
+# 服务器配置
+server:
+  port: 8761  # Eureka服务器端口，默认8761
+
+# Spring应用配置
+spring:
+  application:
+    name: eureka-server  # 应用名称，在Eureka中显示
+
+# Eureka配置
+eureka:
+  instance:
+    hostname: localhost  # Eureka服务器主机名
+    
+  client:
+    # 是否向注册中心注册自己
+    # 由于这是注册中心本身，所以设置为false
+    register-with-eureka: false
+    
+    # 是否从注册中心获取服务列表
+    # 由于这是注册中心本身，所以设置为false
+    fetch-registry: false
+    
+    # 注册中心地址
+    # 其他服务会向这个地址注册
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      
+  server:
+    # 关闭自我保护模式（开发环境）
+    # 生产环境建议开启，防止网络分区时误删服务
+    enable-self-preservation: false
+    
+    # 清理间隔（毫秒）
+    # 定期清理失效的服务实例
+    eviction-interval-timer-in-ms: 5000
+
+# 日志配置
+logging:
+  level:
+    # 设置Eureka相关日志级别
+    com.netflix.eureka: INFO
+    com.netflix.discovery: INFO
+  pattern:
+    # 控制台日志格式
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

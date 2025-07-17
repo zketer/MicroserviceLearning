@@ -1,0 +1,109 @@
+# Spring Cloud Gateway 网关配置文件
+
+# 服务器配置
+server:
+  port: 8080  # 网关端口，作为统一入口
+
+# Spring应用配置
+spring:
+  application:
+    name: gateway-service  # 服务名称
+    
+  # Spring Cloud Gateway 配置
+  cloud:
+    gateway:
+      # 是否启用服务发现
+      discovery:
+        locator:
+          enabled: true  # 启用服务发现定位器
+          lower-case-service-id: true  # 服务名转小写
+          
+      # 路由配置
+      routes:
+        # 用户服务路由
+        - id: user-service  # 路由ID，唯一标识
+          uri: lb://user-service  # 目标服务URI，lb表示负载均衡
+          predicates:  # 路由断言，匹配条件
+            - Path=/user-service/**  # 路径匹配
+          filters:  # 路由过滤器
+            - StripPrefix=1  # 去掉路径前缀，/user-service/test -> /test
+            
+        # 订单服务路由
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/order-service/**
+          filters:
+            - StripPrefix=1
+            
+        # 直接访问用户服务（不带前缀）
+        - id: user-service-direct
+          uri: lb://user-service
+          predicates:
+            - Path=/user/**
+            
+        # 直接访问订单服务（不带前缀）
+        - id: order-service-direct
+          uri: lb://order-service
+          predicates:
+            - Path=/order/**
+            
+      # 全局过滤器配置
+      default-filters:
+        # 添加响应头
+        - AddResponseHeader=X-Gateway, SpringCloudGateway
+        # 添加请求头
+        - AddRequestHeader=X-Request-Source, Gateway
+
+# Eureka客户端配置
+eureka:
+  client:
+    # 向注册中心注册自己
+    register-with-eureka: true
+    
+    # 从注册中心获取服务列表
+    fetch-registry: true
+    
+    # 注册中心地址
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+      
+  instance:
+    # 实例ID
+    instance-id: ${spring.application.name}:${server.port}
+    
+    # 优先使用IP地址注册
+    prefer-ip-address: true
+    
+    # 心跳间隔（秒）
+    lease-renewal-interval-in-seconds: 10
+    
+    # 服务失效时间（秒）
+    lease-expiration-duration-in-seconds: 30
+
+# 日志配置
+logging:
+  level:
+    # Gateway相关日志
+    org.springframework.cloud.gateway: DEBUG
+    # 网关路由日志
+    org.springframework.cloud.gateway.route: DEBUG
+    # HTTP请求日志
+    org.springframework.web.reactive: DEBUG
+    # 项目日志
+    com.study.gateway: DEBUG
+  pattern:
+    # 控制台日志格式
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 管理端点配置（可选）
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露所有端点
+        include: "*"
+  endpoint:
+    health:
+      # 显示详细健康信息
+      show-details: always
